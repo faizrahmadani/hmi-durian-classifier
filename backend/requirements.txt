@@ -1,0 +1,6 @@
+numpy
+pyserial==3.5
+opencv-python
+matplotlib
+flask
+flask-cors
