@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import { CameraCapture } from "./Camera";
+import Classifier from "./Classifier";
 import rizz from "./assets/rizz.mp3";
 import short_augh from "./assets/short-augh.mp3";
 import fart from "./assets/fart.mp3";
@@ -101,11 +102,48 @@ function App() {
   const handleTake = (e) => {
     setTake(e.target.value);
   };
+  let gap = { gap: "20px" };
+  let ambilDataOf = { display: "none" };
+  let ambilDataOn = {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "1rem",
+    gap: "2rem",
+  };
+
+  let classifierOn = { display: "block", marginTop: "1rem" };
+
+  let classifierOf = { display: "none" };
+
+  const [ambilDataPage, setAmbilDataPage] = useState(false);
+  const [classifierPage, setClassifierPage] = useState(false);
+
+  const handleAmbilData = () => {
+    setAmbilDataPage(false);
+    setClassifierPage(false);
+  };
+
+  const handleClassifier = () => {
+    setClassifierPage(true);
+    setAmbilDataPage(true);
+  };
 
   return (
     <>
       <h1 className="two-button-wrapper text-center">{message}</h1>
-      <div className="mt-5 d-flex justify-content-center  gap-4">
+      <div className="d-flex justify-content-center" style={gap}>
+        <button onClick={handleAmbilData} type="button" class="btn btn-primary">
+          Ambil Data
+        </button>
+        <button
+          onClick={handleClassifier}
+          type="button"
+          class="btn btn-primary"
+        >
+          Classifier
+        </button>
+      </div>
+      <div id="ambil-data" style={ambilDataPage ? ambilDataOf : ambilDataOn}>
         <CameraCapture durian={{ nomor, kematangan, take }} />
         <div>
           <div className="mt-3 d-flex gap-3">
@@ -120,7 +158,7 @@ function App() {
               {colorChange ? "Off" : "On"}
             </button>
           </div>
-          {/* <div className="mt-3 d-flex gap-3">
+          <div className="mt-3 d-flex gap-3">
             <h3>Fan Control</h3>
             <button
               onClick={handleButton2Click}
@@ -131,7 +169,7 @@ function App() {
             >
               {colorChange2 ? "Off" : "On"}
             </button>
-          </div> */}
+          </div>
           <div className="mt-3 d-flex gap-3">
             <h3>Ambil Data Aroma</h3>
             <button
@@ -187,6 +225,9 @@ function App() {
             </select>
           </div>
         </div>
+      </div>
+      <div id="classifier" style={classifierPage ? classifierOn : classifierOf}>
+        <Classifier />
       </div>
     </>
   );
