@@ -13,7 +13,9 @@ export const CameraCapture = ({ durian }) => {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { width: 1280, height: 720 },
         });
-        videoRef.current.srcObject = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
       } catch (error) {
         console.error("Error accessing the camera:", error);
       }
@@ -23,7 +25,7 @@ export const CameraCapture = ({ durian }) => {
 
     // Clean up function to stop the camera when the component unmounts
     return () => {
-      if (videoRef.current.srcObject) {
+      if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject;
         const tracks = stream.getTracks();
         tracks.forEach((track) => track.stop());

@@ -1,14 +1,10 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import serial
-import csv
-import time
 import base64
 from aromaRecord import record
 from datetime import datetime
-
-
-# Fungsi untuk mengirim perintah ke Arduino
+import graph_cnn as gc
 
 
 def kirim_ke_arduino(perintah):
@@ -21,7 +17,6 @@ app = Flask(__name__)
 
 CORS(app)
 
-# ser = serial.Serial('COM11', 9600)
 
 @app.route('/')
 def root():
@@ -33,6 +28,13 @@ def root():
 def get_data():
     data = {'message': 'DURIAN CLASSIFIER HMI'}
     return jsonify(data)
+
+
+@app.route('/connect-to-arduino')
+def connect():
+    global ser
+    ser = serial.Serial('COM11', 9600)
+    return 'connected to arduino'
 
 
 # Route untuk menerima permintaan dari situs web
@@ -94,7 +96,11 @@ def cnnGasModel():
 
 @app.route('/gas-classifier')
 def gasClassifier():
-    print(recorded_csv_file)
+    # jadikan file csv menjadi grafik dulu
+    current_graph = gc.graph(recorded_csv_file)
+    prediction = gc.cnnModel(current_graph)
+    print(prediction)
+    return 'nice and complete!!'
 
 
 if __name__ == '__main__':
