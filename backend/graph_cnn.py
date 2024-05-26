@@ -1,8 +1,8 @@
 from matplotlib import pyplot as plt
 import pandas as pd
 import os
-import tensorflow as tf
-from tensorflow.keras.preprocessing import image
+# import tensorflow as tf
+# from tensorflow.keras.preprocessing import image
 import numpy as np
 import cv2
 
