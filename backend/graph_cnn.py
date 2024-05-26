@@ -12,15 +12,25 @@ os.makedirs(output_folder, exist_ok=True)
 
 def graph(file_path):
     df = pd.read_csv(file_path)
-    data = df['value']
-    plt.figure(figsize=(12, 8))
-    plt.plot(data, linewidth=100)
-    plt.ylim(0, 2)
+    data = df['value'].to_numpy()
+    # Create mirrored data with negative values
+    mirrored_data = data * -1
+    # Create bar chart
+    fig, ax = plt.subplots()
+    x = np.arange(len(data))
+
+    # Plot the positive values
+    bars1 = ax.bar(x, data, width=1, color='blue', label='Positive')
+    # Plot the negative values (mirrored)
+    bars2 = ax.bar(x, mirrored_data, width=1, color='blue', label='Negative')
+
+    # Setting labels and title
+    plt.ylim(-2, 2)
     plt.title('')
     plt.xlabel('')
     plt.ylabel('')
     plt.axis('off')
-    file_name = file_path.split('/')[1]
+    file_name = file_path.split('/')[2]
     file_name = file_name.split('.csv')[0]
     output_file = f"graph nn/{file_name}.png"
     plt.savefig(output_file, bbox_inches='tight',
@@ -30,6 +40,22 @@ def graph(file_path):
 
 
 # graph('data aroma/14052024 1704 02.csv')
+
+def normalize(file_path):
+    df = pd.read_csv(file_path)
+    th = 0.94
+    firstValue = df['value'][0]
+    file_name = file_path.split('/')[1]
+    file_name = file_name.split('.csv')[0]
+    if firstValue > th:
+        diff = firstValue - th
+        normalized_DF = df['value'] - diff
+        output_path = f"data aroma/normalized/{file_name}.csv"
+        normalized_DF.to_csv(output_path, index=False)
+    else:
+        output_path = f"data aroma/normalized/{file_name}.csv"
+        df.to_csv(output_path, index=False)
+    return output_path
 
 
 def cnnModel(input_path):

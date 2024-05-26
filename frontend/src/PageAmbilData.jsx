@@ -93,6 +93,8 @@ export const PageAmbilData = () => {
             <option value="">Open this select menu</option>
             <option value="matang">matang</option>
             <option value="mentah">mentah</option>
+            <option value="luar dataset-matang">luar dataset-matang</option>
+            <option value="luar dataset-mentah">luar dataset-mentah</option>
           </select>
         </div>
         <div className="mt-2">

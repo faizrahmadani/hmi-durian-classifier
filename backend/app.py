@@ -33,7 +33,9 @@ def get_data():
 @app.route('/connect-to-arduino')
 def connect():
     global ser
-    ser = serial.Serial('COM11', 9600)
+    port = 'COM11'
+    # port = '/dev/ttyACM0'
+    ser = serial.Serial(port, 9600)
     return 'connected to arduino'
 
 
@@ -87,9 +89,8 @@ def cnnGasModel():
     global recorded_csv_file
     now = datetime.now()
     date_now = now.strftime("%d%m%Y")
-    hourAndMinute = now.strftime("%H%M")
-    second = now.strftime("%S")
-    recorded_csv_file = record(ser, date_now, hourAndMinute, second)
+    hourAndMinutesecond = now.strftime("%H%M%S")
+    recorded_csv_file = record(ser, date_now, hourAndMinutesecond)
     print(recorded_csv_file)
     return recorded_csv_file
 
@@ -97,9 +98,10 @@ def cnnGasModel():
 @app.route('/gas-classifier')
 def gasClassifier():
     # jadikan file csv menjadi grafik dulu
-    current_graph = gc.graph(recorded_csv_file)
-    prediction = gc.cnnModel(current_graph)
-    print(prediction)
+    normalized = gc.normalize(recorded_csv_file)
+    current_graph = gc.graph(normalized)
+    # prediction = gc.cnnModel(current_graph)
+    # print(prediction)
     return 'nice and complete!!'
 
 
