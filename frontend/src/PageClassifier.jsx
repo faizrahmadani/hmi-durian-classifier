@@ -1,135 +1,87 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
-import { CameraCapture } from "./Camera";
 function PageClassifier() {
-  const videoRef = useRef(null);
-  const [capturedImage, setCapturedImage] = useState(null);
-  const [nomor, setNomor] = useState("");
-  const [kematangan, setKematangan] = useState("");
-  const [take, setTake] = useState("");
+  const [gasPrediction, setGasPrediction] = useState("None");
+  const [imagePrediction, setImagePrediction] = useState("None");
+  const [webcamPrediction, setWebcamPrediction] = useState("None");
+  useEffect(() => {}, []);
 
-  useEffect(() => {
-    const startCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: 1280, height: 720 },
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error("Error accessing the camera:", error);
-      }
-    };
-
-    startCamera();
-
-    // Clean up function to stop the camera when the component unmounts
-    return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-    };
-  }, []);
-  // Function to capture an image
-  const captureImage = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
-    canvas.getContext("2d").drawImage(videoRef.current, 0, 0);
-    const imageData = canvas.toDataURL("image/png");
-    setCapturedImage(imageData);
-    // saveImageLocally(imageData);
-    sendDataToBackend(imageData);
-  };
-
-  const sendDataToBackend = (imageData) => {
-    if (durian.nomor == "" && durian.kematangan == "" && durian.take == "") {
-      let stop = new Audio(fart);
-      stop.play();
-      alert("masukan nomor, kematangan, dan percobaan keberapa dulu...");
-    } else {
-      axios
-        .post("http://localhost:5000/upload-image", {
-          image: imageData,
-          nomor: durian.nomor,
-          kematangan: durian.kematangan,
-          take: durian.take,
-        })
-        .then((response) => {
-          // Handle response from backend
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error("Error sending data to backend:", error);
-        });
-      let audio = new Audio(camera_click);
-      audio.play();
-    }
-  };
-  let buttonStyle = {
-    fontSize: "16px",
-  };
-
-  const cnnGasModel = async () => {
+  const loadGas = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/cnn-gas-model");
+      const response = await axios.post("http://localhost:5000/load-cnn-gas");
       console.log(response);
+      setGasPrediction(response.data);
     } catch (error) {
       console.log(error);
     }
   };
-  const cnnClassify = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/gas-classifier");
-    } catch (error) {
-      console.log(error);
-    }
+
+  const FileUpload = ({ prediction, predictionText, info, load }) => {
+    const [fileName, setFileName] = useState(info);
+
+    const handleFileChange = (event) => {
+      setFileName(event.target.files[0].name);
+    };
+
+    return (
+      <div className="col-md-4 text-center">
+        <label className="file-upload">
+          <input type="file" onChange={handleFileChange} />
+          <span className="text-muted">{fileName}</span>
+        </label>
+        <div className={`prediction`}>
+          Predicted :{" "}
+          <span className={`prediction ${prediction}`}>{predictionText}</span>
+        </div>
+        <button className="btn btn-primary mt-2 mb-2" onClick={load}>
+          Classify
+        </button>
+      </div>
+    );
   };
   return (
     <>
       <div className="mt-4 d-flex justify-content-center  gap-3">
-        <div>
-          <video ref={videoRef} autoPlay muted style={{ width: "640px" }} />
-          <div className="d-flex justify-content-center">
-            <button className="btn btn-success" onClick={captureImage}>
-              <i class="fa-solid fa-camera"></i> Capture Image
-            </button>
+        <div className="container mt-5">
+          <div className="row">
+            <FileUpload
+              prediction={
+                gasPrediction === "ripe"
+                  ? "text-success"
+                  : gasPrediction === "unripe"
+                  ? "text-danger"
+                  : ""
+              }
+              predictionText={gasPrediction}
+              info="CNN GAS"
+              load={loadGas}
+            />
+            <FileUpload
+              prediction={
+                imagePrediction === "ripe"
+                  ? "text-success"
+                  : imagePrediction === "unripe"
+                  ? "text-danger"
+                  : ""
+              }
+              predictionText={imagePrediction}
+              info="CNN IMAGE"
+            />
+            <FileUpload
+              prediction={
+                webcamPrediction === "ripe"
+                  ? "text-success"
+                  : webcamPrediction === "unripe"
+                  ? "text-danger"
+                  : ""
+              }
+              predictionText={webcamPrediction}
+              info="CNN WEBCAM IMAGE"
+            />
           </div>
-          {/* <CameraCapture /> */}
         </div>
-        <div>
-          <div className="d-flex gap-2 align-items-center" style={buttonStyle}>
-            <h4>Ambil Data Aroma</h4>
-            <button
-              onClick={cnnGasModel}
-              type="button"
-              className="btn btn-primary"
-            >
-              Ambil
-            </button>
-          </div>
-          <div
-            className="mt-2 d-flex gap-2 align-items-center"
-            style={buttonStyle}
-          >
-            <h4>Classify Durian</h4>
-            <button
-              onClick={cnnClassify}
-              type="button"
-              className="btn btn-primary"
-            >
-              Mulai
-            </button>
-          </div>
-          <div className="mt-3">
-            <h4>CNN Gas Output : </h4>
-            <h4>CNN Image Output : </h4>
-          </div>
-        </div>
+        <div></div>
       </div>
     </>
   );

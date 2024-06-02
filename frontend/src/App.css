@@ -5,3 +5,23 @@
 .two-button-wrapper {
   margin-top: 50px;
 }
+
+.file-upload {
+  height: 200px;
+  border: 2px dashed #ddd;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.file-upload input[type="file"] {
+  display: none;
+}
+
+.prediction {
+  margin-top: 10px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}

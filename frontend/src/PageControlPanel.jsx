@@ -62,7 +62,7 @@ export const PageControlPanel = () => {
       <div className="mt-3 d-flex justify-content-center">
         <video ref={videoRef} autoPlay muted style={{ width: "480px" }} />
       </div>
-      <div className="mt-3 d-flex justify-content-center gap-5">
+      <div className="mt-3 mb-5 d-flex justify-content-center flex-wrap gap-5">
         <div className="mt-3 d-flex gap-3">
           <h3>Lamp Control</h3>
           <button

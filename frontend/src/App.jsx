@@ -8,7 +8,8 @@ import { PageAmbilData } from "./PageAmbilData";
 import PageClassifier from "./PageClassifier";
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Not Connected");
+  const [activeButton, setActiveButton] = useState("ambilData");
   // form control
 
   useEffect(() => {
@@ -56,16 +57,22 @@ function App() {
       console.log(error);
     }
   };
+  const HandleActiveButton = (buttonName) => {
+    setActiveButton(buttonName);
+  };
 
   const handleAmbilData = () => {
     setCurrentPage("page1");
+    HandleActiveButton("ambilData");
   };
 
   const handleClassifier = () => {
     setCurrentPage("page2");
+    HandleActiveButton("classifier");
   };
   const handleControlPanel = () => {
     setCurrentPage("page3");
+    HandleActiveButton("controlPanel");
   };
 
   const renderPage = () => {
@@ -83,7 +90,8 @@ function App() {
 
   return (
     <>
-      <h1 className="two-button-wrapper text-center">{message}</h1>
+      <h1 className="two-button-wrapper text-center">Durian Classifier HMI</h1>
+      <p className="text-center">Server Status : {message}</p>
       <div className="d-flex justify-content-center" style={gap}>
         <button onClick={handleConnect} type="button" class="btn btn-danger">
           Connect to Arduino
@@ -91,17 +99,27 @@ function App() {
         <button
           onClick={handleControlPanel}
           type="button"
-          class="btn btn-primary"
+          class={
+            activeButton === "controlPanel" ? "btn btn-primary" : "btn btn-dark"
+          }
         >
           Control Panel
         </button>
-        <button onClick={handleAmbilData} type="button" class="btn btn-primary">
+        <button
+          onClick={handleAmbilData}
+          type="button"
+          class={
+            activeButton === "ambilData" ? "btn btn-primary" : "btn btn-dark"
+          }
+        >
           Ambil Data
         </button>
         <button
           onClick={handleClassifier}
           type="button"
-          class="btn btn-primary"
+          class={
+            activeButton === "classifier" ? "btn btn-primary" : "btn btn-dark"
+          }
         >
           Classifier
         </button>

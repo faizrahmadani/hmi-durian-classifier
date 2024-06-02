@@ -9,8 +9,6 @@ export const PageAmbilData = () => {
   const [nomor, setNomor] = useState("");
   const [kematangan, setKematangan] = useState("");
   const [take, setTake] = useState("");
-  const [colorChange, setColorChanged] = useState(false);
-  const [colorChange2, setColorChanged2] = useState(false);
   // Color for Ambil Data Aroma
   const [tombolAroma, setTombolAroma] = useState(false);
 
@@ -57,7 +55,10 @@ export const PageAmbilData = () => {
     setTake(e.target.value);
   };
   return (
-    <div id="ambil-data" className="mt-3 d-flex justify-content-center gap-4">
+    <div
+      id="ambil-data"
+      className="mt-3 mb-5 d-flex justify-content-center flex-wrap-reverse gap-4"
+    >
       <CameraCapture durian={{ nomor, kematangan, take }} />
       <div>
         {/* <ControlPanel /> */}
