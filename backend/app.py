@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import serial
 import base64
 from aromaRecord import record
 from datetime import datetime
 from gasloader import classify as gas
+from imageloader import classify as impred
+import os
 
 
 def kirim_ke_arduino(perintah):
@@ -13,6 +15,10 @@ def kirim_ke_arduino(perintah):
 
 app = Flask(__name__)
 CORS(app)
+
+UPLOAD_FOLDER = 'upload'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 
 @app.route('/')
@@ -79,13 +85,35 @@ def upload_image():
 
 
 @app.route('/load-cnn-gas', methods=['POST'])
-def cnnGasModel():
-    # data = request.json
-    # csv_data = data.get("csv")
-    prediction = gas()
-    print(prediction)
-    return prediction
+@cross_origin()
+def load_cnn_gas():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    if file:
+        original_filename = file.filename
+        save_path = os.path.join(UPLOAD_FOLDER, original_filename)
+        file.save(save_path)
+        prediction = gas(save_path)
+        return prediction
 
+
+@app.route('/load-cnn-webcam', methods=['POST'])
+@cross_origin()
+def load_cnn_webcam():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    if file:
+        original_filename = file.filename
+        save_path = os.path.join(UPLOAD_FOLDER, original_filename)
+        file.save(save_path)
+        prediction = impred(save_path)
+        return prediction
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

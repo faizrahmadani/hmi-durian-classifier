@@ -1,3 +1,7 @@
+body {
+  background-color: #F3EDDF;
+}
+
 .main-text {
   text-align: center;
 }
@@ -8,7 +12,7 @@
 
 .file-upload {
   height: 200px;
-  border: 2px dashed #ddd;
+  border: 2px dashed #454545;
   border-radius: 5px;
   display: flex;
   align-items: center;

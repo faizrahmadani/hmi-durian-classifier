@@ -1,7 +1,6 @@
 import time
 import csv
 
-
 def record(ser, nomor, kematangan, take=""):
     csv_file_path = f'data aroma/{nomor} {kematangan} {take}.csv'
     with open(csv_file_path, 'w', newline='') as csv_file:

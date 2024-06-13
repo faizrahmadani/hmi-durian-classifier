@@ -93,9 +93,35 @@ export const CameraCapture = ({ durian }) => {
       {/* <br /> */}
       <video ref={videoRef} autoPlay muted style={{ width: "640px" }}></video>
       <div className="d-flex justify-content-center">
-        <button className="btn btn-primary" onClick={captureImage}>
+        <button
+          className="btn btn-primary"
+          id="liveToastBtn"
+          onClick={captureImage}
+        >
           <i class="fa-solid fa-camera"></i> Capture Image
         </button>
+      </div>
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div
+          id="liveToast"
+          class="toast"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div class="toast-header">
+            <img src="..." class="rounded me-2" alt="..." />
+            <strong class="me-auto">Bootstrap</strong>
+            <small>11 mins ago</small>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="toast-body">Hello, world! This is a toast message.</div>
+        </div>
       </div>
     </div>
   );

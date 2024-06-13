@@ -1,9 +1,6 @@
-# only for avoid the tensorflow error log
-import os
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import easygui
 import joblib
 
 
@@ -18,13 +15,12 @@ def preprocess_data(data, scaler):
     return data
 
 
-def classify():
-    interpreter = tf.lite.Interpreter(model_path='29052024-192640.tflite')
+def classify(file_path):
+    interpreter = tf.lite.Interpreter(model_path='model gas.tflite')
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
 
-    file_path = easygui.fileopenbox(title='Select The File')
     data = load_csv_data(file_path)
 
     scaler_path = 'scaler.pkl'

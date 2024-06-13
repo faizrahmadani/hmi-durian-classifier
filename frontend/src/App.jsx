@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
+import Preload from "./Preload";
 
 import { PageControlPanel } from "./PageControlPanel";
 import { PageAmbilData } from "./PageAmbilData";
@@ -10,7 +11,8 @@ import PageClassifier from "./PageClassifier";
 function App() {
   const [message, setMessage] = useState("Not Connected");
   const [activeButton, setActiveButton] = useState("ambilData");
-  // form control
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState("page1");
 
   useEffect(() => {
     axios
@@ -19,6 +21,12 @@ function App() {
         setMessage(response.data.message);
       })
       .catch((error) => console.error("Error:", error));
+    //Preloader screen timer
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const kirimPerintahKeServer = async (perintah) => {
@@ -44,8 +52,6 @@ function App() {
   };
 
   let gap = { gap: "20px" };
-
-  const [currentPage, setCurrentPage] = useState("page1");
 
   const handleConnect = async () => {
     try {
@@ -90,41 +96,58 @@ function App() {
 
   return (
     <>
-      <h1 className="two-button-wrapper text-center">Durian Classifier HMI</h1>
-      <p className="text-center">Server Status : {message}</p>
-      <div className="d-flex justify-content-center" style={gap}>
-        <button onClick={handleConnect} type="button" class="btn btn-danger">
-          Connect to Arduino
-        </button>
-        <button
-          onClick={handleControlPanel}
-          type="button"
-          class={
-            activeButton === "controlPanel" ? "btn btn-primary" : "btn btn-dark"
-          }
-        >
-          Control Panel
-        </button>
-        <button
-          onClick={handleAmbilData}
-          type="button"
-          class={
-            activeButton === "ambilData" ? "btn btn-primary" : "btn btn-dark"
-          }
-        >
-          Ambil Data
-        </button>
-        <button
-          onClick={handleClassifier}
-          type="button"
-          class={
-            activeButton === "classifier" ? "btn btn-primary" : "btn btn-dark"
-          }
-        >
-          Classifier
-        </button>
-      </div>
-      {renderPage()}
+      <Preload isLoaded={!loading} />
+      {!loading && (
+        <div>
+          <h1 className="two-button-wrapper text-center">
+            Durian Classifier HMI
+          </h1>
+          <p className="text-center">Server Status : {message}</p>
+          <div className="d-flex justify-content-center" style={gap}>
+            <button
+              onClick={handleConnect}
+              type="button"
+              class="btn btn-danger"
+            >
+              Connect to Arduino
+            </button>
+            <button
+              onClick={handleControlPanel}
+              type="button"
+              class={
+                activeButton === "controlPanel"
+                  ? "btn btn-primary"
+                  : "btn btn-dark"
+              }
+            >
+              Control Panel
+            </button>
+            <button
+              onClick={handleAmbilData}
+              type="button"
+              class={
+                activeButton === "ambilData"
+                  ? "btn btn-primary"
+                  : "btn btn-dark"
+              }
+            >
+              Ambil Data
+            </button>
+            <button
+              onClick={handleClassifier}
+              type="button"
+              class={
+                activeButton === "classifier"
+                  ? "btn btn-primary"
+                  : "btn btn-dark"
+              }
+            >
+              Classifier
+            </button>
+          </div>
+          {renderPage()}
+        </div>
+      )}
     </>
   );
 }
