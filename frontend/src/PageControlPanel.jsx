@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 export const PageControlPanel = () => {
   const videoRef = useRef(null);
   const [colorChange, setColorChanged] = useState(false);
@@ -30,12 +31,8 @@ export const PageControlPanel = () => {
   }, []);
   const kirimPerintahKeServer = async (perintah) => {
     try {
-      const response = await fetch("http://localhost:5000/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ perintah }),
+      const response = await axios.post("http://localhost:5000/send", {
+        perintah,
       });
 
       if (!response.ok) {

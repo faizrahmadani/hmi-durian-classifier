@@ -3,13 +3,14 @@ import tensorflow as tf
 import cv2
 from PIL import Image
 from tensorflow.keras.preprocessing import image  # type: ignore
-
+from rembg import remove
 
 
 def load_image(path):
-    # img = image.load_img(test_image_path)
+    input = Image.open(path)
+    img = remove(input)
+    img.save(path)
     img = cv2.imread(str(path))
-   # img = remove(img)
     img = cv2.resize(img, (200, 200))
     # Convert the image to a numpy array
     X = tf.keras.preprocessing.image.img_to_array(img)

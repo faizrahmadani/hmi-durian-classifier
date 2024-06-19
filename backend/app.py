@@ -23,7 +23,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 @app.route('/')
 def root():
-    data = {'message': 'Hello from oke mantap!'}
+    data = {'message': 'Hello from backend!!'}
     return jsonify(data)
 
 
@@ -39,7 +39,7 @@ def connect():
     port = 'COM11'
     # port = '/dev/ttyACM0'
     ser = serial.Serial(port, 9600)
-    return 'connected to arduino'
+    return {'message': 'connected to arduino!'}
 
 
 # Route untuk menerima permintaan dari situs web
@@ -48,7 +48,7 @@ def kirim_perintah():
     data = request.get_json()
     perintah = data['perintah']
     kirim_ke_arduino(perintah)
-    return jsonify({'status': 'ok'})
+    return jsonify({'status': 'ok', 'perintah terkirim': perintah})
 
 
 # Route untuk mengambil data dari sensor MQ-3
@@ -60,7 +60,7 @@ def get_gas_data():
     take = data.get('take')
     # where the function starts!
     record(ser, nomor, kematangan, take)
-    return "Done Recording"
+    return jsonify({'message': 'Done Recording'})
 
 # Route untuk mengambil gambar dari frontend dan menyimpan gambar di backend
 
@@ -79,7 +79,8 @@ def upload_image():
         image_path = f'captured images/{nomor} {kematangan} {take}.png'
         with open(image_path, 'wb') as f:
             f.write(image_bytes)
-        return 'Image uploaded successfully'
+        print(image_data)
+        return jsonify({'message': 'Image uploaded successfully'})
     else:
         return 'No image data provided', 400
 
@@ -114,6 +115,7 @@ def load_cnn_webcam():
         file.save(save_path)
         prediction = impred(save_path)
         return prediction
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
