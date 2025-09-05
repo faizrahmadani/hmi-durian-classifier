@@ -1,2 +1,2 @@
-source "backend-env/Scripts/activate"
+source ".env/Scripts/activate"
 python app.py

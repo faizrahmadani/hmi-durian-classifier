@@ -5,3 +5,8 @@ matplotlib
 flask
 flask-cors
 tensorflow
+pandas
+joblib
+rembg
+onnxruntime
+scikit-learn
